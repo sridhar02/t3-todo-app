@@ -4,8 +4,7 @@ import { api } from "~/utils/api";
 
 export default function Home() {
   const [text, setText] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
-  const [editingTodoId, setEditingTodoId] = useState(null);
+  const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
 
   const todoData = api.todo.getAll.useQuery();
   const utils = api.useUtils();
@@ -28,13 +27,13 @@ export default function Home() {
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     createTodo.mutate({ text, status: false });
     setText("");
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteTodo.mutate({ id });
   };
 
@@ -95,11 +94,17 @@ export default function Home() {
   );
 }
 
-const TodoEditForm = ({ item, onUpdate }) => {
+const TodoEditForm = ({
+  item,
+  onUpdate,
+}: {
+  item: { id: number; text: string };
+  onUpdate: (id: number, text: string) => void;
+}) => {
   const { id, text } = item;
   const [newText, setNewText] = useState(text);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     onUpdate(id, newText);
   };
